@@ -87,13 +87,12 @@ def index(request):
     if request.method == 'GET':
         return render(request, 'index.html')
     elif request.method == 'POST':
-        if (list(request.POST.dict().values())[0][:4] != r'http' and list(request.POST.dict().values())[0][
-                                                                 :5] != r'https' and list(request.POST.dict().values())[
-                                                                                         0][:3] != r'ftp'):
+        url = list(request.POST.dict().values())[0]
+        if (url[:4] != 'http' and url[:5] != 'https' and url[:3] != 'ftp'):
             form_data = list(request.POST.dict().values())[0]
             return render(request, 'index.html', {'form_bad': form_data})
 
-        url = list(request.POST.dict().values())[0]
+
         key = random_key()
         cache.add(key, url)
 
