@@ -58,9 +58,9 @@ def fib():
 
     """
     result = [1, 1]
-    while True:
+    while len(result) < 20:
         result.append(result[-1] + result[-2])
-        break
+
     return result
 
 def flatten(seq):
