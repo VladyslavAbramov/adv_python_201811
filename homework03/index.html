@@ -36,6 +36,9 @@
             <p> Ссылка  <strong>{{ form_bad }} </strong> не прошла проверку. Допускаются следующие схемы: http, https, ftp </p>
          </div>
          {% endif %}
+		 {% if form_count %}
+			<p>Количество кликов: {{ form_count }}</p>
+		 {% endif %}
       </div>
    </body>
 </html>

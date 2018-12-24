@@ -88,7 +88,7 @@ def index(request):
         return render(request, 'index.html')
     elif request.method == 'POST':
         url = list(request.POST.dict().values())[0]
-        if (url[:4] != 'http' and url[:5] != 'https' and url[:3] != 'ftp'):
+        if not url.startswith('http') and not url.startswith('ftp'):
             form_data = list(request.POST.dict().values())[0]
             return render(request, 'index.html', {'form_bad': form_data})
 
@@ -99,6 +99,7 @@ def index(request):
         return render(request, 'index.html', {'form': key})
 
 
+stats_dict = {}
 def redirect_view(request, key):
     """
     Функция обрабатывает сокращенный URL вида http://localhost:8000/<key>
@@ -109,12 +110,31 @@ def redirect_view(request, key):
     url = cache.get(key, 'None')
     if url == 'None':
         return redirect(to='/')
+    try:
+        stats_dict[key] += 1
+    except:
+        stats_dict[key] = 1
     return redirect(to=url)
+
+
+def stats(request, key):
+    """
+    Статистика кликов на сокращенные ссылки.
+    В теле ответа функция возращает количество
+    переходов по данному коду.
+    """
+    try:
+        result = stats_dict[key]
+    except:
+        result = 0
+
+    return render(request, 'index.html', {'form_count': result})
 
 
 urlpatterns = [
     path('', index),
-    re_path(r'^(?P<key>\w+)$', redirect_view)
+    re_path(r'^(?P<key>\w+)$', redirect_view),
+    re_path(r'^(?P<key>\w+)/stats$', stats),
 ]
 
 
